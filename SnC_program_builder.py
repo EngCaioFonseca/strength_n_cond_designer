@@ -672,26 +672,26 @@ def analyze_program(blocks, training_days):
     st.markdown("---")
     st.header("1. Intensity Profile")
     fig_intensity = create_intensity_plot(blocks)
-    st.plotly_chart(fig_intensity)
+    st.plotly_chart(fig_intensity, use_container_width=True)
     
     # 2. Residual Effects
     st.markdown("---")
     st.header("2. Residual Effects")
     fig_residuals = create_residual_effects_plot(blocks)
-    st.plotly_chart(fig_residuals)
+    st.plotly_chart(fig_residuals, use_container_width=True)
     
     # 3. Optimized Effects
     st.markdown("---")
     st.header("3. Optimized Effects")
     fig_optimized = create_optimized_residual_effects_plot(blocks)
-    st.plotly_chart(fig_optimized)
+    st.plotly_chart(fig_optimized, use_container_width=True)
     
     # 4. Block Analysis
     st.markdown("---")
     st.header("4. Block Analysis")
     
     for i, block in enumerate(blocks):
-        st.markdown(f"#### Block {i+1}: {block}")
+        st.subheader(f"Block {i+1}: {block}")
         
         col1, col2 = st.columns(2)
         
@@ -729,7 +729,7 @@ def analyze_program(blocks, training_days):
         schedule_df = generate_weekly_schedule(training_days)
         if not schedule_df.empty:
             fig_schedule = create_schedule_heatmap(schedule_df)
-            st.plotly_chart(fig_schedule)
+            st.plotly_chart(fig_schedule, use_container_width=True)
             
             st.markdown("**Training Guidelines**")
             st.write("• High Intensity: Technical focus")
@@ -747,7 +747,7 @@ def analyze_program(blocks, training_days):
     st.markdown("---")
     st.header("6. Program Timeline")
     fig_gantt = create_program_gantt(blocks)
-    st.plotly_chart(fig_gantt)
+    st.plotly_chart(fig_gantt, use_container_width=True)
     
     # Implementation Guidelines
     st.markdown("---")
@@ -759,15 +759,14 @@ def analyze_program(blocks, training_days):
     4. Peak week: reduced volume, maintained intensity
     """)
 
-
     
 # Define weekly training schedules based on number of training days
-WEEKLY_SCHEDULES = {
-    3: ['Monday', 'Wednesday', 'Friday'],
-    4: ['Monday', 'Tuesday', 'Thursday', 'Friday'],
-    5: ['Monday', 'Tuesday', 'Wednesday', 'Friday', 'Saturday'],
-    6: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-}
+#WEEKLY_SCHEDULES = {
+#    3: ['Monday', 'Wednesday', 'Friday'],
+#    4: ['Monday', 'Tuesday', 'Thursday', 'Friday'],
+#    5: ['Monday', 'Tuesday', 'Wednesday', 'Friday', 'Saturday'],
+#    6: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+#}
 
 def generate_weekly_schedule(training_days):
     """Generate a weekly training schedule based on number of training days"""
