@@ -1,0 +1,1 @@
+# strength_n_cond_designer
