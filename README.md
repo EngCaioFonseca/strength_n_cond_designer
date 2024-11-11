@@ -135,6 +135,19 @@ Project Link: [https://github.com/EngCaioFonseca/strength_n_cond_designer](https
 
 ## Screenshots
 
+![image](https://github.com/user-attachments/assets/965f56d6-6a6d-45a5-a3fc-f383c68ddd72)
+
+![image](https://github.com/user-attachments/assets/1e0544a8-8b38-4524-884a-d3df6d10c875)
+
+![image](https://github.com/user-attachments/assets/579a5366-b084-4516-9354-758c91c9556f)
+
+![image](https://github.com/user-attachments/assets/4dcd364f-852d-4cd0-b495-b3e775b476b3)
+
+![image](https://github.com/user-attachments/assets/c76705fd-b6e1-4c80-b6dc-14a121c257c5)
+
+![image](https://github.com/user-attachments/assets/b1615518-53b4-4234-9178-d5952e30c833)
+
+![image](https://github.com/user-attachments/assets/407dd04c-3c49-42bd-8a53-3c59be05e637)
 
 
 ## Future Improvements
