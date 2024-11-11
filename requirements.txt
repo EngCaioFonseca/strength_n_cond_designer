@@ -1,5 +1,5 @@
-Python 3.8+
-Streamlit
-Plotly
-Pandas
-NumPy
+python
+streamlit
+plotly
+pandas
+numpy
