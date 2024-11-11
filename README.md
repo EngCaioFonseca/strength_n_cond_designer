@@ -30,7 +30,7 @@ ref: Tripashic Training by Cal Dietz
 
 bash
 
-git clone https://github.com/yourusername/strength_n_cond_designer.git
+git clone https://github.com/EngCaioFonseca/strength_n_cond_designer.git
 
 cd strength_n_cond_designer
 
