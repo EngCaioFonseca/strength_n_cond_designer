@@ -662,159 +662,101 @@ def create_optimized_residual_effects_plot(blocks):
 
 def analyze_program(blocks, training_days):
     """Analyze and visualize the training program structure"""
-    st.header('Program Analysis')
+    st.title('Program Analysis')
     
-    # Calculate total duration
+    # Basic Program Info
     total_weeks = sum(TRAINING_BLOCKS[block]['duration_weeks'] for block in blocks)
-    st.write(f"Total Program Duration: {total_weeks} weeks")
+    st.write(f"Program Duration: {total_weeks} weeks")
     
-    # Create intensity visualization
+    # 1. Intensity Profile
+    st.markdown("---")
+    st.header("1. Intensity Profile")
     fig_intensity = create_intensity_plot(blocks)
     st.plotly_chart(fig_intensity)
     
-    # Create original residual effects plot
-    st.subheader("Original Program Residual Effects")
+    # 2. Residual Effects
+    st.markdown("---")
+    st.header("2. Residual Effects")
     fig_residuals = create_residual_effects_plot(blocks)
     st.plotly_chart(fig_residuals)
     
-    # Create optimized residual effects plot
-    st.subheader("Optimized Program Residual Effects (with Mini-Blocks)")
+    # 3. Optimized Effects
+    st.markdown("---")
+    st.header("3. Optimized Effects")
     fig_optimized = create_optimized_residual_effects_plot(blocks)
     st.plotly_chart(fig_optimized)
     
-    # Display block analysis
-    st.subheader("Block Analysis and Recommendations")
+    # 4. Block Analysis
+    st.markdown("---")
+    st.header("4. Block Analysis")
+    
     for i, block in enumerate(blocks):
-        st.write(f"### Block {i+1}: {block}")
+        st.markdown(f"#### Block {i+1}: {block}")
+        
         col1, col2 = st.columns(2)
         
         with col1:
-            st.write(f"**Duration:** {TRAINING_BLOCKS[block]['duration_weeks']} weeks")
-            st.write(f"**Intensity Range:** {TRAINING_BLOCKS[block]['intensity_range'][0]}-{TRAINING_BLOCKS[block]['intensity_range'][1]}%")
+            st.markdown("**Basic Information**")
+            st.write(f"Duration: {TRAINING_BLOCKS[block]['duration_weeks']} weeks")
+            st.write(f"Intensity: {TRAINING_BLOCKS[block]['intensity_range'][0]}-{TRAINING_BLOCKS[block]['intensity_range'][1]}%")
             
-            # Display main exercises based on block type
-            st.write("**Main Exercises:**")
-            if block == 'Strength':
-                exercises = [
-                    'Back Squat',
-                    'Sport Squat',
-                    'Bench Press',
-                    'DB Shoulder Press',
-                    'Rows'
-                ]
-            elif block == 'Power':
-                exercises = [
-                    'Clean',
-                    'Snatch',
-                    'Jump Squats',
-                    'Medicine Ball Throws',
-                    'Plyometrics'
-                ]
-            elif block == 'Speed':
-                exercises = [
-                    'Sprint Variations',
-                    'Plyometrics',
-                    'Medicine Ball Throws',
-                    'Band-Resisted Movements'
-                ]
-            elif block == 'Hypertrophy':
-                exercises = [
-                    'Compound Movements',
-                    'Isolation Exercises',
-                    'Accessory Work'
-                ]
-            
-            for exercise in exercises:
-                st.write(f"- {exercise}")
+            st.markdown("**Main Exercises**")
+            exercises = {
+                'Strength': ['Back Squat', 'Sport Squat', 'Bench Press', 'DB Shoulder Press', 'Rows'],
+                'Power': ['Clean', 'Snatch', 'Jump Squats', 'Medicine Ball Throws', 'Plyometrics'],
+                'Speed': ['Sprint Variations', 'Plyometrics', 'Medicine Ball Throws', 'Band-Resisted Movements'],
+                'Hypertrophy': ['Compound Movements', 'Isolation Exercises', 'Accessory Work']
+            }
+            for ex in exercises[block]:
+                st.write(f"• {ex}")
         
         with col2:
-            st.write("**Block Characteristics:**")
-            if block == 'Strength':
-                st.write("- Focus on maximal force production")
-                st.write("- Progressive overload emphasis")
-                st.write("- Neural adaptations priority")
-            elif block == 'Power':
-                st.write("- Rate of force development focus")
-                st.write("- Technical mastery of Olympic lifts")
-                st.write("- Explosive strength emphasis")
-            elif block == 'Speed':
-                st.write("- Maximum velocity development")
-                st.write("- Neural efficiency focus")
-                st.write("- Minimal resistance work")
-            elif block == 'Hypertrophy':
-                st.write("- Muscle mass development")
-                st.write("- Volume accumulation")
-                st.write("- Metabolic stress emphasis")
+            st.markdown("**Block Focus**")
+            focus = {
+                'Strength': ["Force production", "Progressive overload", "Neural adaptations"],
+                'Power': ["Rate of force development", "Technical mastery", "Explosive strength"],
+                'Speed': ["Maximum velocity", "Neural efficiency", "Minimal resistance"],
+                'Hypertrophy': ["Muscle development", "Volume accumulation", "Metabolic stress"]
+            }
+            for point in focus[block]:
+                st.write(f"• {point}")
         
-        # Mini-block recommendations
-        st.write("**Mini-Block Recommendations:**")
-        if i > 0:  # If not the first block
-            prev_block = blocks[i-1]
-            st.write(f"- Include {prev_block} maintenance work:")
-            if prev_block == 'Strength':
-                st.write("  - 2-3 sets of main lifts at 80-85% 1RM")
-                st.write("  - Focus on quality over volume")
-            elif prev_block == 'Power':
-                st.write("  - Include power-oriented exercises at 60-70% 1RM")
-                st.write("  - Emphasize bar speed and technical execution")
-            elif prev_block == 'Speed':
-                st.write("  - Short sprints or plyometrics")
-                st.write("  - Focus on quality and full recovery")
-        
-        st.write("---")
+        st.markdown("---")
     
-    # Generate and display weekly schedule
-    st.subheader('Weekly Training Schedule')
+    # 5. Weekly Schedule
+    st.header("5. Weekly Schedule")
     try:
         schedule_df = generate_weekly_schedule(training_days)
-        
-        # Display schedule recommendations
-        st.write("**Schedule Optimization:**")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("Training Day Guidelines:")
-            st.write("- High Intensity: Technical focus, max effort")
-            st.write("- Medium Intensity: Volume focus, skill development")
-            st.write("- High Volume: Accumulation, endurance emphasis")
-        
-        with col2:
-            st.write("Recovery Considerations:")
-            st.write("- 24-48 hours between high-intensity sessions")
-            st.write("- Active recovery on off days")
-            st.write("- Sleep and nutrition emphasis")
-        
-        # Create and display weekly schedule heatmap
         if not schedule_df.empty:
             fig_schedule = create_schedule_heatmap(schedule_df)
             st.plotly_chart(fig_schedule)
+            
+            st.markdown("**Training Guidelines**")
+            st.write("• High Intensity: Technical focus")
+            st.write("• Medium Intensity: Volume focus")
+            st.write("• High Volume: Accumulation")
+            
+            st.markdown("**Recovery Focus**")
+            st.write("• 24-48h between high intensity")
+            st.write("• Active recovery on off days")
+            st.write("• Sleep and nutrition priority")
     except Exception as e:
-        st.warning(f"Could not generate weekly schedule: {str(e)}")
+        st.warning(f"Schedule generation error: {str(e)}")
     
-    # Add Gantt chart visualization
-    st.subheader("Program Timeline with Optimization")
+    # 6. Program Timeline
+    st.markdown("---")
+    st.header("6. Program Timeline")
     fig_gantt = create_program_gantt(blocks)
     st.plotly_chart(fig_gantt)
     
-    st.write("""
-    ### Program Timeline Explanation
-    - Main blocks are shown in full color
-    - Gray bars indicate mini-blocks for maintaining previous adaptations
-    - Gold bar shows the peak week
-    - Mini-blocks are strategically placed to maintain previous gains
-    - Peak week brings all qualities to maximum for competition
-    
-    **Implementation Notes:**
-    1. Mini-blocks should be 1-2 sessions within the week
-    2. Focus on quality over quantity in mini-blocks
-    3. Adjust mini-block volume based on recovery
-    4. Peak week includes reduced volume but maintained intensity
-    
-    **Mini-Block Guidelines:**
-    - Strength mini-blocks: 2-3 sets at 80-85% 1RM
-    - Power mini-blocks: 2-3 sets of explosive movements
-    - Speed mini-blocks: Short sprints or plyometrics
-    - Hypertrophy mini-blocks: 2-3 sets of main exercises
+    # Implementation Guidelines
+    st.markdown("---")
+    st.markdown("### Implementation Guidelines")
+    st.markdown("""
+    1. Mini-blocks: 1-2 sessions per week
+    2. Quality over quantity
+    3. Adjust based on recovery
+    4. Peak week: reduced volume, maintained intensity
     """)
 
 
