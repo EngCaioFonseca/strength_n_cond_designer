@@ -16,6 +16,8 @@ from .visualizations import (
     create_program_gantt,
     create_schedule_heatmap,
 )
+from .hevy_import import render_import_page
+from .analytics import render_analytics_page
 
 st.set_page_config(page_title="S&C Program Builder", layout="wide")
 init_db()
@@ -244,7 +246,10 @@ def main():
         st.rerun()
 
     st.sidebar.markdown("---")
-    nav = st.sidebar.radio("Navigation", ["Program Builder", "My Programs", "Training Log"])
+    nav = st.sidebar.radio(
+        "Navigation",
+        ["Program Builder", "My Programs", "Training Log", "Import from Hevy", "Analytics"],
+    )
 
     if nav == "Program Builder":
         render_program_builder()
@@ -252,6 +257,10 @@ def main():
         render_my_programs()
     elif nav == "Training Log":
         render_training_log()
+    elif nav == "Import from Hevy":
+        render_import_page()
+    elif nav == "Analytics":
+        render_analytics_page()
 
 
 if __name__ == "__main__":

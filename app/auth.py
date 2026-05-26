@@ -1,4 +1,6 @@
-import bcrypt
+from __future__ import annotations
+
+import argon2
 import streamlit as st
 from sqlalchemy import func
 
@@ -6,16 +8,30 @@ from .config import MAX_USERS
 from .db import get_db
 from .models import User
 
+_hasher = argon2.PasswordHasher(
+    time_cost=3,
+    memory_cost=65536,
+    parallelism=4,
+)
+
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    return _hasher.hash(password)
 
 
 def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode(), hashed.encode())
+    try:
+        return _hasher.verify(hashed, password)
+    except argon2.exceptions.VerifyMismatchError:
+        return False
+
+
+def _normalize_email(email: str) -> str:
+    return email.strip().lower()
 
 
 def create_user(email: str, password: str, name: str) -> tuple[User | None, str]:
+    email = _normalize_email(email)
     with get_db() as db:
         user_count = db.query(func.count(User.id)).scalar()
         if user_count >= MAX_USERS:
@@ -25,13 +41,14 @@ def create_user(email: str, password: str, name: str) -> tuple[User | None, str]
         if existing:
             return None, "An account with this email already exists."
 
-        user = User(email=email, password_hash=hash_password(password), name=name)
+        user = User(email=email, password_hash=hash_password(password), name=name.strip())
         db.add(user)
         db.flush()
         return user, ""
 
 
 def authenticate_user(email: str, password: str) -> tuple[User | None, str]:
+    email = _normalize_email(email)
     with get_db() as db:
         user = db.query(User).filter(User.email == email).first()
         if not user or not verify_password(password, user.password_hash):
@@ -81,6 +98,9 @@ def render_register_page():
     if submitted:
         if not all([name, email, password, password_confirm]):
             st.error("Please fill in all fields.")
+            return
+        if "@" not in email or "." not in email.split("@")[-1]:
+            st.error("Please enter a valid email address.")
             return
         if password != password_confirm:
             st.error("Passwords do not match.")
