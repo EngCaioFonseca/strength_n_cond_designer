@@ -47,7 +47,11 @@ def parse_hevy_csv(file) -> pd.DataFrame:
 
     for col in ["start_time", "end_time"]:
         if col in df.columns:
-            df[col] = pd.to_datetime(df[col], errors="coerce")
+            parsed = pd.to_datetime(df[col], format="%d %b %Y, %H:%M", errors="coerce")
+            mask = parsed.isna()
+            if mask.any():
+                parsed[mask] = pd.to_datetime(df.loc[mask, col], errors="coerce")
+            df[col] = parsed
 
     df["title"] = df.get("title", "Workout").fillna("Workout")
     df["exercise_title"] = df["exercise_title"].fillna("Unknown Exercise")
