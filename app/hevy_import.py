@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 import pandas as pd
 
 from .db import get_db
@@ -7,6 +9,17 @@ from .models import TrainingLog
 
 LBS_TO_KG = 0.453592
 MILES_TO_KM = 1.60934
+
+
+def _sanitize(value):
+    if value is None:
+        return None
+    try:
+        if math.isnan(value):
+            return None
+    except TypeError:
+        pass
+    return value
 
 
 def parse_hevy_csv(file) -> pd.DataFrame:
@@ -91,11 +104,11 @@ def save_workouts_to_db(user_id: int, workouts: list[dict], program_id: int | No
                         "name": ex["name"],
                         "sets": 1,
                         "reps": s["reps"],
-                        "weight": s["weight_kg"],
-                        "rpe": s.get("rpe"),
+                        "weight": _sanitize(s["weight_kg"]),
+                        "rpe": _sanitize(s.get("rpe")),
                         "set_type": s.get("set_type", "normal"),
-                        "duration_seconds": s.get("duration_seconds"),
-                        "distance_km": s.get("distance_km"),
+                        "duration_seconds": _sanitize(s.get("duration_seconds")),
+                        "distance_km": _sanitize(s.get("distance_km")),
                     })
             db.add(TrainingLog(
                 user_id=user_id, program_id=program_id, date=w["start_time"],

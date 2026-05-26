@@ -11,7 +11,7 @@ def render():
 
     programs = get_user_programs(st.session_state.user_id)
     program_options = {"None (standalone)": None}
-    program_options.update({p.name: p.id for p in programs})
+    program_options.update({p["name"]: p["id"] for p in programs})
 
     uploaded = st.file_uploader("Upload Hevy CSV", type=["csv"])
     target_program = st.selectbox("Link to program (optional)", list(program_options.keys()))

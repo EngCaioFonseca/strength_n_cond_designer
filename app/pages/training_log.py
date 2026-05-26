@@ -5,14 +5,14 @@ import streamlit as st
 from ..db import get_db
 from ..models import TrainingLog
 from ..periodization import TRAINING_BLOCKS
-from ..queries import get_user_programs, get_user_logs
+from ..queries import get_user_programs, get_user_logs_raw
 
 
 def render():
     st.title("Training Log")
 
     programs = get_user_programs(st.session_state.user_id)
-    program_options = {f"{p.name} ({p.id})": p.id for p in programs}
+    program_options = {f"{p['name']} ({p['id']})": p["id"] for p in programs}
 
     st.header("Log a Session")
     with st.form("log_form"):
@@ -56,20 +56,19 @@ def render():
 
     st.markdown("---")
     st.header("Session History")
-    logs = get_user_logs(st.session_state.user_id, limit=50)
+    logs = get_user_logs_raw(st.session_state.user_id, limit=50)
     if not logs:
         st.info("No training sessions logged yet.")
         return
 
     for log in logs:
-        label = f"{log.date.strftime('%Y-%m-%d')} - {log.block_type or 'General'}"
+        label = f"{log['date'].strftime('%Y-%m-%d')} - {log['block_type'] or 'General'}"
         with st.expander(label):
-            for ex in (log.exercises or []):
+            for ex in log["exercises"]:
                 st.write(f"- **{ex['name']}**: {ex.get('sets', 1)}x{ex.get('reps', 0)} @ {ex.get('weight', 0)}kg")
-            if log.notes:
-                st.write(f"*{log.notes}*")
-            if st.button("Delete", key=f"del_log_{log.id}"):
+            if log["notes"]:
+                st.write(f"*{log['notes']}*")
+            if st.button("Delete", key=f"del_log_{log['id']}"):
                 with get_db() as db:
-                    obj = db.merge(log)
-                    db.delete(obj)
+                    db.query(TrainingLog).filter(TrainingLog.id == log["id"]).delete()
                 st.rerun()
