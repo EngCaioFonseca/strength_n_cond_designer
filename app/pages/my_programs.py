@@ -3,6 +3,7 @@ import streamlit as st
 from ..periodization import TRAINING_BLOCKS, program_duration
 from ..queries import get_user_programs
 from ..db import get_db
+from ..models import TrainingProgram
 
 
 def render():
@@ -14,14 +15,13 @@ def render():
         return
 
     for prog in programs:
-        with st.expander(f"{prog.name} ({prog.created_at.strftime('%Y-%m-%d')})"):
-            valid_blocks = [b for b in prog.blocks if b in TRAINING_BLOCKS]
-            st.write(f"**Blocks:** {', '.join(prog.blocks)}")
-            st.write(f"**Training days/week:** {prog.training_days}")
+        with st.expander(f"{prog['name']} ({prog['created_at'].strftime('%Y-%m-%d')})"):
+            valid_blocks = [b for b in prog["blocks"] if b in TRAINING_BLOCKS]
+            st.write(f"**Blocks:** {', '.join(prog['blocks'])}")
+            st.write(f"**Training days/week:** {prog['training_days']}")
             st.write(f"**Duration:** {program_duration(valid_blocks)} weeks")
 
-            if st.button("Delete", key=f"del_{prog.id}"):
+            if st.button("Delete", key=f"del_{prog['id']}"):
                 with get_db() as db:
-                    obj = db.merge(prog)
-                    db.delete(obj)
+                    db.query(TrainingProgram).filter(TrainingProgram.id == prog["id"]).delete()
                 st.rerun()
