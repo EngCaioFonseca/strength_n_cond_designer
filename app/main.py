@@ -18,6 +18,7 @@ from .visualizations import (
 )
 from .hevy_import import render_import_page
 from .analytics import render_analytics_page
+from .smart_program import render_smart_program_page
 
 st.set_page_config(page_title="S&C Program Builder", layout="wide")
 init_db()
@@ -248,10 +249,12 @@ def main():
     st.sidebar.markdown("---")
     nav = st.sidebar.radio(
         "Navigation",
-        ["Program Builder", "My Programs", "Training Log", "Import from Hevy", "Analytics"],
+        ["Smart Program", "Program Builder", "My Programs", "Training Log", "Import from Hevy", "Analytics"],
     )
 
-    if nav == "Program Builder":
+    if nav == "Smart Program":
+        render_smart_program_page()
+    elif nav == "Program Builder":
         render_program_builder()
     elif nav == "My Programs":
         render_my_programs()
